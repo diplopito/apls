@@ -13,4 +13,4 @@ The demo uses the following libraries:
 * [Progress Bar](https://kimmobrunfeldt.github.io/progressbar.js/)
 
 ## License
-[MIT](https://github.com/fdaciuk/licenses/blob/master/MIT-LICENSE.md)
+[MIT](https://opensource.org/licenses/MIT)
