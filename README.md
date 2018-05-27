@@ -1,5 +1,5 @@
 # apls
-**Apls.js** is an alternative playlist for [Amplitude.js](https://github.com/521dimensions/amplitudejs) written in vanilla JavaScript. Its main features are that it doesn't require a JSON playlist object and can play (multiple) lists --created dynamically as well via Ajax or Drag & Drop.
+**Apls.js** is an alternative playlist for [Amplitude.js](https://github.com/521dimensions/amplitudejs) written in vanilla JavaScript. Its main features are that it doesn't require a JSON playlist object and can play (multiple) lists --created dynamically via Ajax or Drag & Drop as well.
 
 ## Documentation
 Point your browser to: [Apls Docs](https://apls.bliptunes.com)
