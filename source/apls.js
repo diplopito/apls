@@ -1,6 +1,6 @@
 var Apls = (function () {
 
-	var version = '0.2';
+	var version = '0.21';
 
 	/* Check that Amplitude is defined */
 	if (typeof Amplitude == 'undefined') {
@@ -319,7 +319,7 @@ var Apls = (function () {
 			Amplitude.pause();
 		}
 
-		if (isRefreshDivs) clearDivs([options.mainAlbum, options.mainArtist, options.mainSong]);
+		if (isRefreshDivs) clearDivs([options.mainArtist, options.mainSong]);
 
 		if (isShuffle) setPlsShuffled();
 
