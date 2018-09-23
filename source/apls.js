@@ -1,7 +1,7 @@
 var Apls = (function () {
 
-	var version = '0.21';
-
+	var version = '0.30';
+	
 	/* Check that Amplitude is defined */
 	if (typeof Amplitude == 'undefined') {
 		console.log('Apls requires Amplitude.js to run.');
@@ -19,6 +19,7 @@ var Apls = (function () {
 		mainSong: div with class song. Contains song title
 		mainArtist: div with class artist. Contains artist name
 		continuous: bool to play endlessly
+		playOne: bool to play only one song
 		shuffle: bool to play shuffled
 		autoplay: bool to start playing asap
 	}
@@ -36,6 +37,7 @@ var Apls = (function () {
 		plsShuffledIndex = 0,
 		isContinuous,
 		isPaused = false,
+		isPlayOne = false,
 		isRefreshDivs,
 		isRepeat = false,
 		isShuffle;
@@ -59,15 +61,22 @@ var Apls = (function () {
 		/* Fresh start */
 		clearSelected();
 
+		/* Process the users options */
+
+		/* Generate the playlist */
+		if (opts.tracks && Array.isArray(tracks)) addSong(tracks);
+
 		/* Shall we refresh the main divs? */
 		isRefreshDivs = opts.refreshDivs || true;
 		options.mainAlbum = opts.mainAlbum || 'mainAlbum';
 		options.mainSong = opts.mainSong || 'mainSong';
 		options.mainArtist = opts.mainArtist || 'mainArtist';
 
-
 		/* Play endlessly */
 		isContinuous = opts.continuous || false;
+
+		/* Play only one song */
+		isPlayOne = opts.playOne || false;
 
 		/* Play shuffled */
 		isShuffle = opts.shuffle || false;
@@ -75,6 +84,7 @@ var Apls = (function () {
 
 		/* Start playing now */
 		if (opts.autoplay) play();
+
 	}
 
 	/* Set arrow keys left and right to move along the playlist */
@@ -105,8 +115,8 @@ var Apls = (function () {
 		var ctrl = pls.querySelectorAll('.selected');
 		var len = ctrl.length;
 		if (len > 0) {
-			var i=0;
-			for (i; i<len; i++) {
+			var i = 0;
+			for (i; i < len; i++) {
 				ctrl[i].classList.remove('selected');
 			}
 		}
@@ -126,6 +136,11 @@ var Apls = (function () {
 	/* Get pause state */
 	function getPaused() {
 		return isPaused;
+	}
+
+	/* Get play one state */
+	function getPlayOne() {
+		return isPlayOne;
 	}
 
 	/* Get plsShuffled */
@@ -235,6 +250,8 @@ var Apls = (function () {
 	*/
 	function playNext() {
 
+		if (isPlayOne) return playStop();
+
 		if (isShuffle) return playNextShuffled();
 
 		var curTrack = pls.querySelector('.selected');
@@ -253,7 +270,7 @@ var Apls = (function () {
 				if (Amplitude.getSongPlayedPercentage() === 100) {
 					curTrack.classList.remove('selected');
 					firePlayEnd();
-				} 
+				}
 			}
 		}
 	}
@@ -278,7 +295,7 @@ var Apls = (function () {
 				if (Amplitude.getSongPlayedPercentage() === 100) {
 					curTrack.classList.remove('selected');
 					firePlayEnd();
-				} 
+				}
 			}
 		}
 	}
@@ -347,6 +364,11 @@ var Apls = (function () {
 		isContinuous = !isContinuous;
 	}
 
+	/* Set play only one */
+	function setPlayOne() {
+		isPlayOne = !isPlayOne;
+	}
+
 	/* Set refresh divs */
 	function setRefreshDivs(bol) {
 		isRefreshDivs = bol;
@@ -392,11 +414,64 @@ var Apls = (function () {
 		return array;
 	}
 
+	/* Array with new songs objects:
+		Ex: tracks = [
+						{
+							id: 'pls100',
+							url: 'demo3.mp3',
+							album: 'demo3.png',
+							artist: 'Miguel de la Bastide',
+							song: 'Viajero'							
+						},
+						{
+							id: 'pls101',
+							url: 'demo4.mp3',
+							album: 'demo4.png',
+							artist: 'El viejín',
+							song: 'A mi hijo J.'									
+						}
+					]
+	*/
+	function utilsAddNewTracks(tracks) {
+		if (!Array.isArray(tracks)) {
+			console.log("Error: tracks must be an array");
+			return false;
+		}
+
+		var tracksLen = tracks.length;
+
+		for (var i = 0; i < tracksLen; i++) {
+			pls.innerHTML += utilsCreateTrack(tracks[i]);
+		}
+	}
+
+	/* String literal template to create a new track */
+	function utilsCreateTrack(track) {
+		var track = utilsSanitizeObj(track);
+		return `<li ${ (track.id && track.id.innerHTML !== '') ? `id='${track.id.innerHTML}'` : ""} data-track-url="${track.url.innerHTML}" ${ (track.album && track.album.innerHTML !== '') ? `data-album='${track.album.innerHTML}'` : ""} onclick="Apls.play(this)">
+		            ${ (track.artist && track.artist.innerHTML !== '') ? `<span class="artist">${track.artist.innerHTML}</span>` : ""} ${ (track.song && track.song.innerHTML !== '') ? ` | <span class="song">${track.song.innerHTML}</span>` : ""}
+				 </li>`
+	}
+
+	/* Sanitizes obj */
+	function utilsSanitizeObj(obj) {
+		var cleanObj = {};
+		for (prop in obj) {
+			var span = document.createElement("span");
+			span.appendChild(document.createTextNode(obj[prop]));
+			cleanObj[prop] = span;
+		}
+		return cleanObj;
+	}
+
+
 	return {
+		addSong: utilsAddNewTracks,
 		continuous: setContinuous,
 		init: init,
 		isContinuous: getContinuous,
 		isPaused: getPaused,
+		isPlayOne: getPlayOne,
 		isRepeat: getRepeat,
 		isShuffle: getShuffle,
 		pause: pause,
@@ -404,6 +479,7 @@ var Apls = (function () {
 		play: play,
 		playNext: playNext,
 		playNow: playNow,
+		playOne: setPlayOne,
 		playPrev: playPrev,
 		plsShuffled: getPlsShuffled,
 		stop: playStop,
@@ -412,5 +488,4 @@ var Apls = (function () {
 		shuffle: setShuffle,
 		ver: getVersion,
 	}
-
 })();
