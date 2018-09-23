@@ -12,5 +12,8 @@ The demo uses the following libraries:
 * [Dragula](https://github.com/bevacqua/dragula)
 * [Progress Bar](https://kimmobrunfeldt.github.io/progressbar.js/)
 
+## Changelog
+**v 0.30** Implemented the method **Apls.addSong()** to add new songs to the active playlist dynamically.
+
 ## License
 [MIT](https://opensource.org/licenses/MIT)
