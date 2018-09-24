@@ -1,6 +1,6 @@
 var Apls = (function () {
 
-	var version = '0.30';
+	var version = '0.31';
 	
 	/* Check that Amplitude is defined */
 	if (typeof Amplitude == 'undefined') {
@@ -27,6 +27,7 @@ var Apls = (function () {
 	@plsShuffledIndex: Index for keeping track of @plsShuffled
 	@isContinuous: bool. Determines if user wants to play endlessly the playlist
 	@isPaused: bool. Toggles play state (default false)
+	@isPlayOne: bool. Toggles play only one song state (default false)
 	@isRefreshDivs: bool. Dev wants Apls to handle the main Divs (or not)
 	@isRepeat: bool. Repeat endlessly the current playing song (false by default)
 	@isShuffle: bool. Play shuffled (or not)
@@ -63,8 +64,8 @@ var Apls = (function () {
 
 		/* Process the users options */
 
-		/* Generate the playlist */
-		if (opts.tracks && Array.isArray(tracks)) addSong(tracks);
+		/* Generate the playlist if array set in options */
+		if (opts.tracks && Array.isArray(tracks)) utilsAddNewTracks(tracks);
 
 		/* Shall we refresh the main divs? */
 		isRefreshDivs = opts.refreshDivs || true;
@@ -414,7 +415,7 @@ var Apls = (function () {
 		return array;
 	}
 
-	/* Array with new songs objects:
+	/* Adds array with new songs to active playlist:
 		Ex: tracks = [
 						{
 							id: 'pls100',
