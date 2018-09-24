@@ -22,6 +22,7 @@ var Apls = (function () {
 		playOne: bool to play only one song
 		shuffle: bool to play shuffled
 		autoplay: bool to start playing asap
+		tracks: array with tracks as objects
 	}
 	@plsShuffled: Array to store the ghost shuffled playlist
 	@plsShuffledIndex: Index for keeping track of @plsShuffled
